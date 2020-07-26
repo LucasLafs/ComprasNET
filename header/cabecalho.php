@@ -171,7 +171,7 @@ if (!isset ($_SESSION['user']) == true) //verifica se há uma sessão, se não, 
         </li>
         <li class="nav-item">
           <a href="./fabricantes.php" class="nav-link">
-            <i class="fas fa-users nav-icon" style="font-size: 15px; margin-left: -1px; margin-right: 2px;"></i>
+            <i class="fas fa-archive nav-icon" style="font-size: 15px; margin-left: -1px; margin-right: 2px;"></i>
             <p>Fabricantes</p>
           </a>
         </li>
@@ -179,6 +179,12 @@ if (!isset ($_SESSION['user']) == true) //verifica se há uma sessão, se não, 
           <a href="./conf-email.php" class="nav-link">
             <i class="fas fa-cog" style="margin-right: 7px; margin-left: 3px;"></i>
             <p>Configurações E-mail</p>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="./users.php" class="nav-link">
+            <i class="fas fa-users" style="margin-right: 7px; margin-left: 3px;"></i>
+            <p>Usúarios</p>
           </a>
         </li>
 
