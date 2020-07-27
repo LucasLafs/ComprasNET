@@ -1,5 +1,9 @@
 <?php
-require_once("../header/cabecalho.php");
+  require_once("../header/cabecalho.php");
+
+  if ($gestorUser == 'N'){
+      echo "<script>window.location.href='./dashboard.php';</script>";
+  }
 ?>
 
 <div class="content-wrapper">

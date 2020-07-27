@@ -1,23 +1,31 @@
 <?php
-ini_set('session.gc_maxlifetime', 60 * 60); // 60 minutos
-session_start();
-date_default_timezone_set("America/Sao_Paulo");
-if (!isset ($_SESSION['user']) == true) //verifica se há uma sessão, se não, volta para área de login
-{
-  unset($_SESSION['user']);
-  header('location:../index.php');
-} else {
+  ini_set('session.gc_maxlifetime', 60 * 60); // 60 minutos
+  session_start();
+  date_default_timezone_set("America/Sao_Paulo");
+  if (!isset ($_SESSION['user']) == true) //verifica se há uma sessão, se não, volta para área de login
+  {
+    unset($_SESSION['user']);
+    header('location:../index.php');
+    exit;
+  } else {
 
 
-  $logado = $_SESSION['user'];
+    $logado = $_SESSION['user'];
 
-  $idUser = $logado['id'];
-  $nameUser = $logado['nome'];
-  $emailUser = $logado['email'];
-}
+    $idUser = $logado['id'];
+    $nameUser = $logado['nome'];
+    $emailUser = $logado['email'];
+    $gestorUser = $logado['gestor'];
+    $blockUser = $logado['bloqueado'];
+
+    if($blockUser == 'Y'){
+      unset($_SESSION['user']);
+      header('location: ../index.php');
+      exit;
+    }
+  }
 
 ?>
-
 
 <!DOCTYPE html>
 <html>
@@ -175,18 +183,23 @@ if (!isset ($_SESSION['user']) == true) //verifica se há uma sessão, se não, 
             <p>Fabricantes</p>
           </a>
         </li>
-        <li class="nav-item">
-          <a href="./conf-email.php" class="nav-link">
-            <i class="fas fa-cog" style="margin-right: 7px; margin-left: 3px;"></i>
-            <p>Configurações E-mail</p>
-          </a>
-        </li>
-        <li class="nav-item">
-          <a href="./users.php" class="nav-link">
-            <i class="fas fa-users" style="margin-right: 7px; margin-left: 3px;"></i>
-            <p>Usúarios</p>
-          </a>
-        </li>
+        <?php 
+          if ($gestorUser == 'Y') {
+            echo '<li class="nav-item">
+              <a href="./conf-email.php" class="nav-link">
+                <i class="fas fa-cog" style="margin-right: 7px; margin-left: 3px;"></i>
+                <p>Configurações E-mail</p>
+              </a>
+            </li>
+            <li class="nav-item">
+              <a href="./users.php" class="nav-link">
+                <i class="fas fa-users" style="margin-right: 7px; margin-left: 3px;"></i>
+                <p>Usúarios</p>
+              </a>
+            </li>';
+          }
+        ?>
+       
 
       </ul>
     </nav>

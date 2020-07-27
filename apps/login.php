@@ -26,11 +26,16 @@ if (isset($_POST['login'])) {
             $arrUser['id'] = $user['id'];
             $arrUser['nome'] = $user['nome'];
             $arrUser['email'] = $user['email'];
+            $arrUser['gestor'] = $user['gestor'];
 
-            $_SESSION['user'] = $arrUser;
-         //   $_SESSION['idUser'] = $user['id'];
+            if ( $user['bloqueado'] == 'Y' ){
+                $display = 'block';
+                $msg = "Usuário bloqueado!";
+            } else {
+                $_SESSION['user'] = $arrUser;
+                header("Location: ./dashboard.php");
+            }
 
-            header("Location: ./dashboard.php");
         } else {
             $display = 'block';
             $msg = "A senha está incorreta!";

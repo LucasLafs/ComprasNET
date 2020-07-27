@@ -30,6 +30,7 @@ $(document).ready(function() {
             $("#divAlterarSenha").slideDown();
           }
         });
+
     });
 
 });

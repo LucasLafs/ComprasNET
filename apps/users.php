@@ -1,5 +1,10 @@
 <?php 
     require_once("../header/cabecalho.php");
+
+    if ($gestorUser == 'N'){
+        echo "<script>window.location.href='./dashboard.php';</script>";
+    }
+
 ?>
 
 <style>
@@ -221,9 +226,10 @@
         $('#form' +action+' input').each(function() {
             if ($(this).attr('type') == 'checkbox') {
                 $(this).prop('checked', false);
-            }
-            if ($(this).attr('name') != 'act' ) {
-                $(this).val('');
+            } else {
+                if ($(this).attr('name') != 'act' ) {
+                    $(this).val('');
+                }
             }
         });
 
