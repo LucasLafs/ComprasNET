@@ -14,7 +14,8 @@ if ($_REQUEST['act']) {
         $id_item = $_REQUEST['id'];
         $id_fabri = $_REQUEST['idFabricante'];
         $pf_id = $_REQUEST['pf_id'];
-        return getItensFabri($id_item, $id_fabri, $pf_id);
+        $id_licitacao = $_REQUEST['idLicitacao'];
+        return getItensFabri($id_item, $id_fabri, $pf_id, $id_licitacao);
     } else if ($request == 'sendEmail') {
         if (isset($_REQUEST['item_id'])) {
           $item_id = $_REQUEST['item_id'];
@@ -30,21 +31,26 @@ if ($_REQUEST['act']) {
     }
 }
 
-function getItensFabri($id_item, $id_fabricante, $pf_id)
+function getItensFabri($id_item, $id_fabricante, $pf_id = '', $id_licitacao = '')
 {
     $con = bancoMysqli();
 
-    $sql = "SELECT 
-                f.nome, 
-                f.email, 
-                pf.id
-                FROM produtos_futura as pf
-                INNER JOIN fabricantes AS f ON f.id = pf.fabricante_id
-                WHERE item_id = $id_item AND fabricante_id = $id_fabricante AND pf.id = $pf_id";
+    if ($pf_id && $pf_id != ''){
+        $sql = "SELECT 
+                    f.nome, 
+                    f.email, 
+                    pf.id
+                    FROM produtos_futura as pf
+                    INNER JOIN fabricantes AS f ON f.id = pf.fabricante_id
+                    WHERE item_id = $id_item AND fabricante_id = $id_fabricante AND pf.id = $pf_id";
+
+    } else {
+        $sql = "SELECT f.nome, f.email, pf.id, pf.lic_id FROM produtos_futura as pf 
+            INNER JOIN fabricantes AS f ON f.id = pf.fabricante_id WHERE lic_id = $id_licitacao AND f.id = $id_fabricante";
+    }
 
     $query = mysqli_query($con, $sql);
     $rows = mysqli_num_rows($query);
-
     if ($rows > 0) {
         $obj = [];
 

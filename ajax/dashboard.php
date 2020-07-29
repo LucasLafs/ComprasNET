@@ -57,19 +57,17 @@ function buscaContFiltros(){
             $itens_relacionados[] = $rows['itens_relacionados'];
         }
 
-        foreach ($idents_enviados as $enviado) {
-            foreach($idents_nao_enviados as $nao_enviado) {
-                if ($nao_enviado != $enviado){
-                    $cot_nao_enviados[] = $nao_enviado;
-                }
-            }
-        }
+        $idents_enviados = array_unique($idents_enviados);
+        $idents_nao_enviados = array_unique($idents_nao_enviados);
 
-        $cot_nao_enviados = array_unique($cot_nao_enviados);
+        foreach ($idents_enviados as $enviado) {
+            $key = array_search($enviado, $idents_enviados);
+            unset($idents_nao_enviados[$key]);
+        }
 
         $data['nao-enviados'] = $ids_nao_enviados ? count($ids_nao_enviados) : 0;
         $data['recomendadas'] = $itens_relacionados ? count($itens_relacionados) : 0;
-        $data['SemEnvios'] = $idents_enviados ? count($cot_nao_enviados) : 0;
+        $data['SemEnvios'] = $idents_nao_enviados ? count($idents_nao_enviados) : 0;
     }
 
     $sql = "SELECT DISTINCT lc.identificador as identificador, 

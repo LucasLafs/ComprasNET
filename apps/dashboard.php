@@ -86,7 +86,7 @@ require_once("../header/cabecalho.php");
             <div class="icon">
               <i class="fas fa-align-justify"></i>
             </div>
-            <a href="#" onclick='buscaCotacoes("SemEnvios");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
+            <a href="#" onclick='buscaCotacoes("estados");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
                 class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
@@ -572,7 +572,7 @@ require_once("../header/cabecalho.php");
                   value = "value='" + d.id + "'";
 
                   input = '<label class="container" >\n' +
-                    '  <input type="checkbox" style="background: white !important"  value="' + d.id + '" data-ident="' + identificador + '"  data-pf_id="' + produto_id + '"  class="checkOne checkOneItem' + identificador + '">\n' +
+                    '  <input type="checkbox" style="background: white !important"  value="' + d.id + '" data-idFabri="'+idFabricante+'" data-ident="' + identificador + '"  data-pf_id="' + produto_id + '"  class="checkOne checkOneItem' + identificador + '">\n' +
                     '  <span class="checkmark"></span>\n' +
                     '</label>';
                 }
@@ -603,7 +603,7 @@ require_once("../header/cabecalho.php");
                   d.unidade || '-',
                   d.valor_estimado ? locationBrVal(d.valor_estimado) : '-',
                   " <button style='margin-left: 20px;color: " + iconColor + "' class='btn btn-sm btn-edit pull-left sendMail'\n" +
-                  "      title='" + title + "' id='" + d.id + "' data-pf_id='" + produto_id + "' data-fabricante='" + idFabricante + "' " + disabled + " " + value + " > " +
+                  "      title='" + title + "' id='" + d.id + "' idLicitacao='" + d.lic_id + "' data-pf_id='" + produto_id + "' data-fabricante='" + idFabricante + "' " + disabled + " " + value + " > " +
                   "<span class='fas fa-mail-bulk'/> </button>" + flag,
                 ]);
               });

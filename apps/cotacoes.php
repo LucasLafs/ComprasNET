@@ -411,7 +411,7 @@ function makeTblLicitacoes(data) {
                     d.unidade || '-',
                     d.valor_estimado ? locationBrVal(d.valor_estimado) : '-',
                     " <button style='margin-left: 20px;color: "+iconColor+";' class='btn btn-sm btn-edit pull-left sendMail'\n" +
-                    "      title='"+title+"' id='"+d.id+"'  data-pf_id='"+produto_id+"' data-fabricante='"+idFabricante+"' "+disabled+" "+value+" > <span class='fas fa-mail-bulk'/>\n" +
+                    "      title='"+title+"' id='"+d.id+"' idLicitacao='" + d.lic_id + "' data-pf_id='"+produto_id+"' data-fabricante='"+idFabricante+"' "+disabled+" "+value+" > <span class='fas fa-mail-bulk'/>\n" +
                     "          </button>" + flag,
                     //  " <i class='fa fa-thumbs-up text-info' style='float: right; margin-top: -14px; font-size: 13px;'></i>",
                   ]);
