@@ -58,11 +58,19 @@ function getLicitacoes($filtro = '')
 
     }
 
-    $sql = "SELECT li.uasg, identificador, DATE_FORMAT(data_entrega_proposta, '%d/%m/%Y')
-                AS data_entrega_prop, informacoes_gerais, objeto, situacao_aviso, DATE_FORMAT(data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta, o.lic_estado AS uf 
-                FROM licitacoes_cab AS li 
-                LEFT JOIN licitacao_orgao AS o ON o.uasg = li.uasg
-                $inner $filtro order by data_entrega_proposta desc limit 1000";
+    $sql = "SELECT li.uasg, 
+            identificador, 
+            numero_aviso, 
+            DATE_FORMAT(data_entrega_proposta, '%d/%m/%Y') AS data_entrega_prop, 
+            informacoes_gerais, 
+            objeto, 
+            situacao_aviso, 
+            li.data_abertura_proposta AS data_abertura_proposta, 
+            DATE_FORMAT(data_abertura_proposta, '%d/%m/%Y') AS data_abertura_prop, 
+            o.lic_estado AS uf 
+            FROM licitacoes_cab AS li 
+            LEFT JOIN licitacao_orgao AS o ON o.uasg = li.uasg
+            $inner $filtro order by data_abertura_proposta desc limit 1000";
 
     $query = mysqli_query($con, $sql);
     if($query){
@@ -78,7 +86,8 @@ function getLicitacoes($filtro = '')
                     $licitacoes['uasg'] ?? '-',
                     $licitacoes['uf'] ?? '-',
                     $licitacoes['data_entrega_prop'] ?? '-',
-                    $licitacoes['data_abertura_proposta'] ?? '-',
+                    $licitacoes['data_abertura_prop'] ?? '-',
+                    $licitacoes['numero_aviso'] ?? '-',
                     $licitacoes['informacoes_gerais'] ?? '-',
                     $licitacoes['objeto'] ?? '-',
                     $licitacoes['situacao_aviso'] ?? '-',

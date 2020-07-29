@@ -19,13 +19,23 @@ function buscaContFiltros(){
     $con = bancoMysqli();
 
     $date = date('Y-m-d');
-    $sql = "SELECT * FROM licitacoes_cab WHERE data_entrega_proposta > '$date'";
+    $sql = "SELECT * FROM licitacoes_cab WHERE data_abertura_proposta > '$date'";
     $query = mysqli_query($con, $sql);
     if($query){
         $data['vigentes'] = mysqli_num_rows($query); 
     }
 
-    $sql = "SELECT DISTINCT ee.item_id as ids_enviados, pf.item_id as nao_enviados, pf.item_id as itens_relacionados FROM email_enviados AS ee RIGHT JOIN produtos_futura AS pf 
+    $sql = "SELECT COUNT(*) AS ncotacoes FROM licitacoes_cab";
+    $query = mysqli_query($con, $sql);
+    if($query){
+        while($row = mysqli_fetch_assoc($query)){
+            if($row['ncotacoes'] != null){
+                $data['cotacoes'] = $row['ncotacoes'];
+            }
+        }; 
+    }
+
+    $sql = "SELECT DISTINCT pf.lic_id as lic_id, ee.item_id as ids_enviados, pf.item_id as nao_enviados, pf.item_id as itens_relacionados FROM email_enviados AS ee RIGHT JOIN produtos_futura AS pf 
             ON pf.item_id = ee.item_id 
             ORDER BY pf.item_id ASC";
     
@@ -39,19 +49,32 @@ function buscaContFiltros(){
         while ($rows = mysqli_fetch_assoc($query)){
             if($rows['ids_enviados'] != null){
                 $ids_enviados[] = $rows['ids_enviados'];
+                $idents_enviados[] = $rows['lic_id'];
             } else {
                 $ids_nao_enviados[] = $rows['nao_enviados'];
+                $idents_nao_enviados[] = $rows['lic_id'];
             }
             $itens_relacionados[] = $rows['itens_relacionados'];
         }
 
+        foreach ($idents_enviados as $enviado) {
+            foreach($idents_nao_enviados as $nao_enviado) {
+                if ($nao_enviado != $enviado){
+                    $cot_nao_enviados[] = $nao_enviado;
+                }
+            }
+        }
+
+        $cot_nao_enviados = array_unique($cot_nao_enviados);
+
         $data['nao-enviados'] = $ids_nao_enviados ? count($ids_nao_enviados) : 0;
         $data['recomendadas'] = $itens_relacionados ? count($itens_relacionados) : 0;
+        $data['SemEnvios'] = $idents_enviados ? count($cot_nao_enviados) : 0;
     }
 
     $sql = "SELECT DISTINCT lc.identificador as identificador, 
             lc.uasg as uasg, 
-            DATE_FORMAT(lc.data_entrega_proposta, '%d/%m/%Y') AS data_entrega_proposta_ord, 
+            DATE_FORMAT(lc.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord, 
             lc.informacoes_gerais as informacoes_gerais, 
             lc.objeto as objeto, 
             lc.situacao_aviso as situacao_aviso
@@ -64,7 +87,7 @@ function buscaContFiltros(){
         $total = mysqli_num_rows($query);
     }
 
-        $data['estados'] = $total;
+    $data['estados'] = $total;
 
     echo json_encode($data);
     exit;
@@ -82,16 +105,18 @@ function buscaCotacoes(){
         $sql = "SELECT lic.uasg, 
         identificador, 
         lic.data_entrega_proposta as data_entrega_proposta, 
+        lic.numero_aviso as numero_aviso,
         DATE_FORMAT(lic.data_entrega_proposta, '%d/%m/%Y') AS data_entrega_proposta_ord, 
         informacoes_gerais, 
         objeto, 
         situacao_aviso,
-        DATE_FORMAT(data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta,
+        lic.data_abertura_proposta as data_abertura_proposta,
+        DATE_FORMAT(lic.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord,
         o.lic_estado AS uf 
         FROM licitacoes_cab AS lic
         LEFT JOIN licitacao_orgao AS o ON o.uasg = lic.uasg
-        WHERE data_entrega_proposta > '$date' 
-        order by data_entrega_proposta desc limit 5000";
+        WHERE data_abertura_proposta > '$date' 
+        order by data_abertura_proposta desc limit 5000";
 
         $query = mysqli_query($con, $sql);
         if($query){
@@ -150,17 +175,19 @@ function buscaCotacoes(){
 
         $sql = "SELECT DISTINCT lic.identificador as identificador,
         lic.uasg as uasg, 
+        lic.numero_aviso as numero_aviso,
         lic.data_entrega_proposta AS data_entrega_proposta, 
         DATE_FORMAT(lic.data_entrega_proposta, '%d/%m/%Y') AS data_entrega_proposta_ord, 
         lic.informacoes_gerais as informacoes_gerais, 
         lic.objeto as objeto, 
         lic.situacao_aviso as situacao_aviso,
-        DATE_FORMAT(data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta,
+        lic.data_abertura_proposta as data_abertura_proposta, 
+        DATE_FORMAT(lic.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord,
         o.lic_estado AS uf 
         FROM licitacoes_cab AS lic
         LEFT JOIN licitacao_orgao AS o ON o.uasg = lic.uasg 
         LEFT JOIN licitacao_itens ON lic.identificador = licitacao_itens.lic_id
-        WHERE licitacao_itens.id IN (" . implode(',', $ids_nao_enviados) . ") AND licitacao_itens.valid = true ORDER BY lic.data_entrega_proposta DESC ";  // order by data_entrega_proposta_ord limit 5000";
+        WHERE licitacao_itens.id IN (" . implode(',', $ids_nao_enviados) . ") AND licitacao_itens.valid = true ORDER BY data_abertura_proposta DESC ";  // order by data_entrega_proposta_ord limit 5000";
 
         $query = mysqli_query($con, $sql);
         if($query){
@@ -214,17 +241,19 @@ function buscaCotacoes(){
 
         $sql = "SELECT DISTINCT lic.identificador as identificador,
         lic.uasg as uasg, 
+        lic.numero_aviso as numero_aviso,
         lic.data_entrega_proposta AS data_entrega_proposta, 
         DATE_FORMAT(lic.data_entrega_proposta, '%d/%m/%Y') AS data_entrega_proposta_ord, 
         lic.informacoes_gerais as informacoes_gerais, 
         lic.objeto as objeto, 
         lic.situacao_aviso as situacao_aviso,
-        DATE_FORMAT(data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta,
+        lic.data_abertura_proposta as data_abertura_proposta, 
+        DATE_FORMAT(lic.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord,
         o.lic_estado AS uf 
         FROM licitacoes_cab AS lic
         LEFT JOIN licitacao_orgao AS o ON o.uasg = lic.uasg
         LEFT JOIN licitacao_itens ON lic.identificador = licitacao_itens.lic_id
-        WHERE licitacao_itens.id IN (" . implode(',', $ids_relacionados) . ") AND licitacao_itens.valid = true ORDER BY lic.data_entrega_proposta DESC ";  // order by data_entrega_proposta_ord limit 5000";
+        WHERE licitacao_itens.id IN (" . implode(',', $ids_relacionados) . ") AND licitacao_itens.valid = true ORDER BY data_abertura_proposta DESC ";  // order by data_entrega_proposta_ord limit 5000";
 
         $query = mysqli_query($con, $sql);
         if($query){
@@ -252,14 +281,16 @@ function buscaCotacoes(){
 
         $sql = "SELECT DISTINCT lc.identificador as identificador, 
         lc.uasg as uasg, 
+        lc.numero_aviso as numero_aviso,
         lc.data_entrega_proposta AS data_entrega_proposta, 
         DATE_FORMAT(lc.data_entrega_proposta, '%d/%m/%Y') AS data_entrega_proposta_ord, 
         lc.informacoes_gerais as informacoes_gerais, 
         lc.objeto as objeto, 
         lc.situacao_aviso as situacao_aviso,
-        DATE_FORMAT(data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta,
+        lc.data_abertura_proposta as data_abertura_proposta, 
+        DATE_FORMAT(lc.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord,
         lo.lic_estado AS uf
-        FROM licitacoes_cab AS lc LEFT JOIN licitacao_orgao AS lo ON lc.uasg = lo.uasg WHERE lo.lic_estado IN ('SP', 'DF', 'RJ') ORDER BY lc.data_entrega_proposta DESC ";
+        FROM licitacoes_cab AS lc LEFT JOIN licitacao_orgao AS lo ON lc.uasg = lo.uasg WHERE lo.lic_estado IN ('SP', 'DF', 'RJ') ORDER BY data_abertura_proposta DESC ";
 
         $query = mysqli_query($con, $sql);
         if($query){
@@ -281,6 +312,77 @@ function buscaCotacoes(){
             }
         }
         
+    } else if ($_REQUEST['filtro'] == 'SemEnvios') {
+
+        $sql = "SELECT DISTINCT pf.lic_id as lic_id, ee.item_id as ids_enviados, pf.item_id as nao_enviados FROM email_enviados AS ee RIGHT JOIN produtos_futura AS pf 
+                ON pf.item_id = ee.item_id 
+                ORDER BY pf.item_id ASC";
+        
+        $query = mysqli_query($con, $sql);
+
+        if($query){
+
+            while ($rows = mysqli_fetch_assoc($query)){
+                if($rows['ids_enviados'] != null){
+                    $ids_enviados[] = $rows['ids_enviados'];
+                    $idents_enviados[] = $rows['lic_id'];
+                } else {
+                    $ids_nao_enviados[] = $rows['nao_enviados'];
+                }
+            }
+
+        }
+
+        $sql = "SELECT DISTINCT lic.identificador as identificador,
+        lic.uasg as uasg, 
+        lic.numero_aviso as numero_aviso, 
+        lic.data_entrega_proposta AS data_entrega_proposta, 
+        DATE_FORMAT(lic.data_entrega_proposta, '%d/%m/%Y') AS data_entrega_proposta_ord, 
+        lic.informacoes_gerais as informacoes_gerais, 
+        lic.objeto as objeto, 
+        lic.situacao_aviso as situacao_aviso,
+        lic.data_abertura_proposta as data_abertura_proposta, 
+        DATE_FORMAT(lic.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord,
+        o.lic_estado AS uf 
+        FROM licitacoes_cab AS lic
+        LEFT JOIN licitacao_orgao AS o ON o.uasg = lic.uasg 
+        LEFT JOIN licitacao_itens ON lic.identificador = licitacao_itens.lic_id
+        WHERE licitacao_itens.id IN (" . implode(',', $ids_nao_enviados) . ") AND lic.identificador NOT IN (" . implode(',', $idents_enviados) . ") AND licitacao_itens.valid = true ORDER BY data_abertura_proposta DESC ";  // order by data_entrega_proposta_ord limit 5000";
+
+        $query = mysqli_query($con, $sql);
+        if($query){
+            $total = mysqli_num_rows($query);
+
+            if( $total > 0 ){
+                $obj = [];
+                //$ret = array();
+                
+                while($ret = mysqli_fetch_assoc($query)){
+
+                    $obj[] = $ret;
+
+                    // $obj = [
+                    //     $ret['identificador'],
+                    //     '',
+                    //     $ret['uasg'],
+                    //     $ret['data_entrega_proposta_ord'],
+                    //     $ret['informacoes_gerais'],
+                    //     $ret['objeto'],
+                    //     $ret['situacao_aviso'],
+                    //     "<button class='btn btn-sm btn-edit'><i class='fa fa-print'></i></button>",
+
+
+                    // ];
+
+                }
+
+                $data[0] = $obj;
+                $data[1] = $total;
+                echo json_encode($data);
+            }
+        } else {
+            echo $sql;
+        }
     }
 
     exit;
@@ -294,7 +396,7 @@ function buscaItensLicitacao(){
     $sql = "SELECT 
             i.id,
             i.lic_id as lic_id,
-            num_aviso,
+            lic.numero_aviso as num_aviso,
             i.num_item_licitacao,
             cod_item_servico,
             cod_item_material,
@@ -317,6 +419,7 @@ function buscaItensLicitacao(){
             licitacao_itens AS i
             LEFT JOIN produtos_futura AS pf ON pf.item_id = i.id
             LEFT JOIN fabricantes AS f ON f.id = pf.fabricante_id
+            RIGHT JOIN licitacoes_cab as lic ON i.lic_id = lic.identificador 
             WHERE
             i.lic_id = $identificador AND i.valid = true
         ";

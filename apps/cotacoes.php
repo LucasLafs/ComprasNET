@@ -65,6 +65,7 @@ require_once("../header/cabecalho.php");
                                                 <th scope="col">UF</th>
                                                 <th scope="col">Data Entrega</th>
                                                 <th scope="col">Data Abertura</th>
+                                                <th scope="col">Pregão</th>
                                                 <th scope="col">Descrição</th>
                                                 <th scope="col">Objeto</th>
                                                 <th scope="col">Situação</th>
@@ -181,14 +182,10 @@ function getCotacoes(stop = 0) {
     $.when(
         $.ajax('../ajax/cotacoes.php?act=getLicitacoes'),
     ).then(function (data) {
-        console.log(data);
         if (data != 0) {
-            console.log("cai no if");
             data = JSON.parse(data);
 
             makeTblLicitacoes(data);
-
-            console.log(data.length);
 
             if (data.length < 100) {
                 getLicGerais();
@@ -266,6 +263,12 @@ function makeTblLicitacoes(data) {
       {
         witdh: "6%",
         className: "vertical-align",
+        "orderable": false,
+      },
+      {
+        witdh: "6%",
+        className: "vertical-align",
+        "orderable": false,
       },
       {
         witdh: "6%",
@@ -276,15 +279,16 @@ function makeTblLicitacoes(data) {
         className: "vertical-align",
       },
       {
-        witdh: "6%",
+        witdh: "7%",
+        className: "vertical-align",
+        "orderable": false,
+      },
+      {
+        width: '18%',
         className: "vertical-align",
       },
       {
-        width: '15%',
-        className: "vertical-align",
-      },
-      {
-        width: '65%',
+        width: '55%',
         className: "vertical-align",
       },
       {
@@ -399,7 +403,8 @@ function makeTblLicitacoes(data) {
                     input || '-',
                     d.lic_id  || '-',
                     d.num_aviso  || '-',
-                    d.cod_produto != null ? d.desc_produto : d.descricao_item,
+                    d.descricao_item || '-',
+                    d.desc_produto || '-',
                     d.fabricante || '-',
                     d.cod_produto || '-',
                     d.quantidade || '-',
@@ -435,7 +440,7 @@ function makeTblLicitacoes(data) {
                   },
                   {
                     className: "vertical-align",
-                    width: "13%"
+                    width: "9%"
                   },
                   {
                     className: "vertical-align",
@@ -443,7 +448,11 @@ function makeTblLicitacoes(data) {
                   },
                   {
                     className: "vertical-align",
-                    width: "20%",
+                    width: "30%",
+                  },
+                  {
+                    className: "vertical-align",
+                    width: "11%",
                   },
                   {
                     className: "vertical-align",
@@ -489,11 +498,12 @@ function makeTblLicitacoes(data) {
           '         <th scope="col"><label class="container"><input type="checkbox"  value="'+id+'" class="checkAllItens"> <span class="checkmark"  ></span></label></th>' +
           '         <th scope="col">ID Licitação</th>' +
           '         <th scope="col">Número Aviso</th>' +
-          '         <th scope="col">Descrição do Item</th>' +
+          '         <th scope="col">Descrição Original</th>' +
+          '         <th scope="col">Descrição Futura</th>' +
           '         <th scope="col">Fabricante</th>' +
-          '         <th scope="col">Código do Item</th>' +
-          '         <th scope="col">Quantidade</th>' +
-          '         <th scope="col">Unidade</th>' +
+          '         <th scope="col">Cód. Item</th>' +
+          '         <th scope="col">Qtd</th>' +
+          '         <th scope="col">Un</th>' +
           '         <th scope="col">Valor Estimado</th>' +
           '         <th style="text-align: right" scope="col">Ações</th>' +
           '        </tr>' +

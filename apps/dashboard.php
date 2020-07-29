@@ -33,7 +33,7 @@ require_once("../header/cabecalho.php");
     <div class="container-fluid">
       <!-- Small boxes (Stat box) -->
       <div class="row">
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
           <!-- small box -->
           <div class="small-box bg-primary">
             <div class="inner">
@@ -47,7 +47,7 @@ require_once("../header/cabecalho.php");
                 class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
           <!-- small box -->
           <div class="small-box bg-orange">
             <div class="inner">
@@ -62,7 +62,7 @@ require_once("../header/cabecalho.php");
                                                                         class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
           <!-- small box -->
           <div class="small-box bg-green">
             <div class="inner">
@@ -76,17 +76,45 @@ require_once("../header/cabecalho.php");
               &nbsp;&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
-        <div class="col-lg-3 col-6">
+        <div class="col-lg-2 col-6">
           <!-- small box -->
           <div class="small-box bg-red">
             <div class="inner">
               <h3 id='nCotacoesestados'>0</h3>
-              <p>Cotações estados principais</p>
+              <p>Estados principais</p>
             </div>
             <div class="icon">
               <i class="fas fa-align-justify"></i>
             </div>
-            <a href="#" onclick='buscaCotacoes("estados");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
+            <a href="#" onclick='buscaCotacoes("SemEnvios");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
+                class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-6">
+          <!-- small box -->
+          <div class="small-box bg-info">
+            <div class="inner">
+              <h3 id='nCotacoesSemEnvios'>0</h3>
+              <p>Cotações sem envios</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-align-justify"></i>
+            </div>
+            <a href="#" onclick='buscaCotacoes("SemEnvios");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
+                class="fas fa-arrow-circle-right"></i></a>
+          </div>
+        </div>
+        <div class="col-lg-2 col-6">
+          <!-- small box -->
+          <div class="small-box bg-gray">
+            <div class="inner">
+              <h3 id='nCotacoes'>0</h3>
+              <p>Número de Cotações</p>
+            </div>
+            <div class="icon">
+              <i class="fas fa-align-justify"></i>
+            </div>
+            <a href="./cotacoes.php" class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
                 class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
@@ -118,6 +146,7 @@ require_once("../header/cabecalho.php");
                     <th scope="col">UF</th>
                     <th scope="col">Data Entrega</th>
                     <th scope="col">Data Abertura</th>
+                    <th scope="col">Pregão</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Objeto</th>
                     <th scope="col">Situação</th>
@@ -155,6 +184,7 @@ require_once("../header/cabecalho.php");
                     <th scope="col">UF</th>
                     <th scope="col">Data Entrega</th>
                     <th scope="col">Data Abertura</th>
+                    <th scope="col">Pregão</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Objeto</th>
                     <th scope="col">Situação</th>
@@ -194,6 +224,7 @@ require_once("../header/cabecalho.php");
                     <th scope="col">UF</th>
                     <th scope="col">Data Entrega</th>
                     <th scope="col">Data Abertura</th>
+                    <th scope="col">Pregão</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Objeto</th>
                     <th scope="col">Situação</th>
@@ -237,6 +268,7 @@ require_once("../header/cabecalho.php");
                     <th scope="col">UF</th>
                     <th scope="col">Data Entrega</th>
                     <th scope="col">Data Abertura</th>
+                    <th scope="col">Pregão</th>
                     <th scope="col">Descrição</th>
                     <th scope="col">Objeto</th>
                     <th scope="col">Situação</th>
@@ -252,6 +284,48 @@ require_once("../header/cabecalho.php");
             </div>
           </div>
         </div>
+
+        <div class="card divFiltro" id='SemEnvios' style="display: none;">
+
+          <div class="row" style="padding: 25px 21px 0px 0px; margin-bottom: -5px;">
+            <div class="col-12 text-center">
+              <h5 style="margin-bottom: -25px; float: right;" class="text-info">Cotações sem nenhum envio de email</h5>
+            </div>
+          </div>
+
+          <div class="card-body ">
+            <div class="tab1-loading overlay loadTable" style="display: none"></div>
+            <div class="tab1-loading loading-img loadTable" style="display: none"></div>
+            <div class='row'>
+              <div class='col-12'>
+                <table id="table-data-licitacoes-SemEnvios"
+                       class="table table-responsive table-hover vertical-align"
+                       style="width: 100% !important;">
+                  <thead>
+                  <tr>
+                    <th scope="col"></th>
+                    <th scope="col" class="vertical-align"></th>
+                    <th scope="col">UASG</th>
+                    <th scope="col">UF</th>
+                    <th scope="col">Data Entrega</th>
+                    <th scope="col">Data Abertura</th>
+                    <th scope="col">Pregão</th>
+                    <th scope="col">Descrição</th>
+                    <th scope="col">Objeto</th>
+                    <th scope="col">Situação</th>
+                    <th style='text-align: right;' scope="col">Ações</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                  <!--  <div class="tab1-loading overlay"></div>
+                  <div class="tab1-loading loading-img"></div>-->
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </section>
@@ -275,6 +349,8 @@ require_once("../header/cabecalho.php");
           $('#nCotacoesnao-enviados').html(data['nao-enviados']);
           $('#nCotacoesrecomendadas').html(data['recomendadas']);
           $('#nCotacoesestados').html(data['estados']);
+          $('#nCotacoesSemEnvios').html(data['SemEnvios']);   
+          $('#nCotacoes').html(data['cotacoes']); 
         }
       }
     })
@@ -325,7 +401,8 @@ require_once("../header/cabecalho.php");
               d.uasg || '-',
               d.uf || '-',
               d.data_entrega_proposta_ord || '-',
-              d.data_abertura_proposta || '-',
+              d.data_abertura_proposta_ord || '-',
+              d.numero_aviso || '-',
               d.informacoes_gerais || '-',
               d.objeto || '-',
               d.situacao_aviso || '-',
@@ -356,25 +433,34 @@ require_once("../header/cabecalho.php");
               {
                 witdh: "6%",
                 className: "vertical-align",
+                "orderable": false,
               },
               {
                 witdh: "6%",
                 className: "vertical-align",
+                "orderable": false,
               },
               {
                 witdh: "6%",
                 className: "vertical-align",
+                "orderable": false,
               },
               {
                 witdh: "6%",
                 className: "vertical-align",
+                "orderable": false,
               },
               {
-                width: '15%',
+                witdh: "7%",
+                className: "vertical-align",
+                "orderable": false,
+              },
+              {
+                width: '18%',
                 className: "vertical-align",
               },
               {
-                width: '65%',
+                width: '55%',
                 className: "vertical-align",
               },
               {
@@ -509,7 +595,8 @@ require_once("../header/cabecalho.php");
                   input || '-',
                   d.lic_id || '-',
                   d.num_aviso || '-',
-                  d.cod_produto != null ? d.desc_produto : d.descricao_item || '-',
+                  d.descricao_item || '-',
+                  d.desc_produto || '-', 
                   d.fabricante || '-',
                   d.cod_produto || '-',
                   d.quantidade || '-',
@@ -543,7 +630,7 @@ require_once("../header/cabecalho.php");
                   },
                   {
                     className: "vertical-align",
-                    width: "13%"
+                    width: "9%"
                   },
                   {
                     className: "vertical-align",
@@ -551,7 +638,11 @@ require_once("../header/cabecalho.php");
                   },
                   {
                     className: "vertical-align",
-                    width: "20%",
+                    width: "30%",
+                  },
+                  {
+                    className: "vertical-align",
+                    width: "11%",
                   },
                   {
                     className: "vertical-align",
@@ -599,11 +690,12 @@ require_once("../header/cabecalho.php");
         '         <th scope="col"><label class="container"><input type="checkbox" style="background: white !important"  value="' + id + '" class="checkAllItens"> <span class="checkmark"></span></label></th>' +
         '         <th scope="col">ID Licitação</th>' +
         '         <th scope="col">Número Aviso</th>' +
-        '         <th scope="col">Descrição do Item</th>' +
+        '         <th scope="col">Descrição Original</th>' +
+        '         <th scope="col">Descrição Futura</th>' +
         '         <th scope="col">Fabricante</th>' +
-        '         <th scope="col">Código do Item</th>' +
-        '         <th scope="col">Quantidade</th>' +
-        '         <th scope="col">Unidade</th>' +
+        '         <th scope="col">Cód. Item</th>' +
+        '         <th scope="col">Qtd</th>' +
+        '         <th scope="col">Un</th>' +
         '         <th scope="col">Valor Estimado</th>' +
         '         <th style="text-align: right;" scope="col">Ações</th>' +
         '        </tr>' +
@@ -630,7 +722,6 @@ require_once("../header/cabecalho.php");
     var clicked = 0;
 
     $.each($(".checkOne"), function () {
-      console.log($(this).prop("checked"));
       if ($(this).prop('checked') == true) {
         clicked++;
       }
