@@ -325,7 +325,7 @@ function processItemLic($identificador, $uasg, $item, $doUpdate) {
 function saveLici($identificador, $licitacao) {
     $pregao = sprintf("%5s%04s", $licitacao->numero, $licitacao->ano);
     $situacao = null;
-    if (isset($detalhesLic->ultimoEvento)) {
+    if (isset($licitacao->ultimoEvento)) {
         switch ($licitacao->ultimoEvento) {
             case 2:
                 $situacao = "Adiado";
@@ -354,6 +354,24 @@ function saveLici($identificador, $licitacao) {
     }
 
     $con = bancoMysqli();
+    
+    foreach ($licitacao AS $campo => $value) {
+
+        if (!is_object($value)) {
+            // $licitacao->$campo = $value != null ? "'$value'" : 'null';
+            if($value != null){
+                if ( $campo != 'dataHoraAberturaSessaoPublica' && $campo != 'dataHoraInicioEntregaProposta' ){
+                    $value = str_replace("\"", "'", $value);
+                    $value = str_replace("\\", "/", $value);
+                    $licitacao->$campo = '"' . "$value" . '"';
+                }
+            } else {
+                $licitacao->$campo = 'null';
+            }
+        }
+
+    }
+
     $sqlVerifica = "SELECT * FROM licitacoes_cab WHERE identificador = $identificador";
     $queryVerifica = mysqli_query($con, $sqlVerifica);
     if (mysqli_num_rows($queryVerifica) == 0) {

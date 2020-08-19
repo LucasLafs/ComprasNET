@@ -70,22 +70,14 @@ function buscaContFiltros(){
         $data['SemEnvios'] = $idents_nao_enviados ? count($idents_nao_enviados) : 0;
     }
 
-    $sql = "SELECT DISTINCT lc.identificador as identificador, 
-            lc.uasg as uasg, 
-            DATE_FORMAT(lc.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord, 
-            lc.informacoes_gerais as informacoes_gerais, 
-            lc.objeto as objeto, 
-            lc.situacao_aviso as situacao_aviso
-            FROM licitacoes_cab AS lc 
-            LEFT JOIN licitacao_orgao AS lo ON lc.uasg = lo.uasg
-            WHERE lo.lic_estado IN ('SP', 'DF', 'RJ') ";
+    $sql = "SELECT COUNT(*) AS total FROM licitacoes_cab AS lc LEFT JOIN licitacao_orgao AS lo ON lc.uasg = lo.uasg WHERE lo.lic_estado IN ('SP', 'DF', 'RJ') ";
 
     $query = mysqli_query($con, $sql);
     if($query){
-        $total = mysqli_num_rows($query);
+        $total = mysqli_fetch_assoc($query);
     }
 
-    $data['estados'] = $total;
+    $data['estados'] = $total['total'];
 
     echo json_encode($data);
     exit;
@@ -287,7 +279,7 @@ function buscaCotacoes(){
         lc.situacao_aviso as situacao_aviso,
         lc.data_abertura_proposta as data_abertura_proposta, 
         DATE_FORMAT(lc.data_abertura_proposta, '%d/%m/%Y') AS data_abertura_proposta_ord,
-        lo.lic_estado AS uf
+        lo.lic_estado AS uf 
         FROM licitacoes_cab AS lc LEFT JOIN licitacao_orgao AS lo ON lc.uasg = lo.uasg WHERE lo.lic_estado IN ('SP', 'DF', 'RJ') ORDER BY data_abertura_proposta DESC ";
 
         $query = mysqli_query($con, $sql);
@@ -296,18 +288,28 @@ function buscaCotacoes(){
 
             if( $total > 0 ){
                 $obj = [];
-                //$ret = array();
                 
                 while($ret = mysqli_fetch_assoc($query)){
-
                     $obj[] = $ret;
+                }
 
+                $sql = "SELECT COUNT(*) AS total FROM licitacoes_cab AS lc LEFT JOIN licitacao_orgao AS lo ON lc.uasg = lo.uasg WHERE lo.lic_estado IN ('SP', 'DF', 'RJ') ";
+
+                $query = mysqli_query($con, $sql);
+                if($query){
+                    $count = mysqli_fetch_assoc($query);
+                } else {
+                    echo $sql;
                 }
 
                 $data[0] = $obj;
-                $data[1] = $total;
+                $data[1] = $count['total'];
                 echo json_encode($data);
+            } else {
+                echo $sql;
             }
+        } else {
+            echo $sql;
         }
         
     } else if ($_REQUEST['filtro'] == 'SemEnvios') {
@@ -326,7 +328,17 @@ function buscaCotacoes(){
                     $idents_enviados[] = $rows['lic_id'];
                 } else {
                     $ids_nao_enviados[] = $rows['nao_enviados'];
+                    $idents_nao_enviados[] = $rows['lic_id'];
                 }
+                $itens_relacionados[] = $rows['itens_relacionados'];
+            }
+
+            $idents_enviados = array_unique($idents_enviados);
+            $idents_nao_enviados = array_unique($idents_nao_enviados);
+
+            foreach ($idents_enviados as $enviado) {
+                $key = array_search($enviado, $idents_enviados);
+                unset($idents_nao_enviados[$key]);
             }
 
         }
@@ -345,8 +357,9 @@ function buscaCotacoes(){
         FROM licitacoes_cab AS lic
         LEFT JOIN licitacao_orgao AS o ON o.uasg = lic.uasg 
         LEFT JOIN licitacao_itens ON lic.identificador = licitacao_itens.lic_id
-        WHERE licitacao_itens.id IN (" . implode(',', $ids_nao_enviados) . ") AND lic.identificador NOT IN (" . implode(',', $idents_enviados) . ") AND licitacao_itens.valid = true ORDER BY data_abertura_proposta DESC ";  // order by data_entrega_proposta_ord limit 5000";
-
+        RIGHT JOIN produtos_futura as pf ON lic.identificador = pf.lic_id 
+        WHERE lic.identificador NOT IN (" . implode(',', $idents_enviados) . ") AND licitacao_itens.valid = true ORDER BY data_abertura_proposta DESC";  // order by data_entrega_proposta_ord limit 5000";
+        // echo $sql; exit;
         $query = mysqli_query($con, $sql);
         if($query){
             $total = mysqli_num_rows($query);

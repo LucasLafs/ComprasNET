@@ -46,6 +46,8 @@ require_once("../header/cabecalho.php");
             <a href="#" id='' onclick='buscaCotacoes("vigentes");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
                 class="fas fa-arrow-circle-right"></i></a>
           </div>
+          <div class="tab2-loading overlay loadTable" style="display: none"></div>
+          <div class="tab2-loading loading-img loadTable" style="display: none"></div>
         </div>
         <div class="col-lg-2 col-6">
           <!-- small box -->
@@ -61,6 +63,8 @@ require_once("../header/cabecalho.php");
                class="small-box-footer">Mais Informações &nbsp;&nbsp;<i style="color: white"
                                                                         class="fas fa-arrow-circle-right"></i></a>
           </div>
+          <div class="tab2-loading overlay loadTable" style="display: none"></div>
+          <div class="tab2-loading loading-img loadTable" style="display: none"></div>
         </div>
         <div class="col-lg-2 col-6">
           <!-- small box -->
@@ -75,6 +79,8 @@ require_once("../header/cabecalho.php");
             <a href="#" onclick='buscaCotacoes("recomendadas");' class="small-box-footer">Mais Informações
               &nbsp;&nbsp;<i class="fas fa-arrow-circle-right"></i></a>
           </div>
+          <div class="tab2-loading overlay loadTable" style="display: none"></div>
+          <div class="tab2-loading loading-img loadTable" style="display: none"></div>
         </div>
         <div class="col-lg-2 col-6">
           <!-- small box -->
@@ -89,6 +95,8 @@ require_once("../header/cabecalho.php");
             <a href="#" onclick='buscaCotacoes("estados");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
                 class="fas fa-arrow-circle-right"></i></a>
           </div>
+          <div class="tab2-loading overlay loadTable" style="display: none"></div>
+          <div class="tab2-loading loading-img loadTable" style="display: none"></div>
         </div>
         <div class="col-lg-2 col-6">
           <!-- small box -->
@@ -103,6 +111,8 @@ require_once("../header/cabecalho.php");
             <a href="#" onclick='buscaCotacoes("SemEnvios");' class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
                 class="fas fa-arrow-circle-right"></i></a>
           </div>
+          <div class="tab2-loading overlay loadTable" style="display: none"></div>
+          <div class="tab2-loading loading-img loadTable" style="display: none"></div>
         </div>
         <div class="col-lg-2 col-6">
           <!-- small box -->
@@ -117,6 +127,8 @@ require_once("../header/cabecalho.php");
             <a href="./cotacoes.php" class="small-box-footer">Mais Informações &nbsp;&nbsp;<i
                 class="fas fa-arrow-circle-right"></i></a>
           </div>
+          <div class="tab2-loading overlay loadTable" style="display: none"></div>
+          <div class="tab2-loading loading-img loadTable" style="display: none"></div>
         </div>
       </div>
 
@@ -334,6 +346,7 @@ require_once("../header/cabecalho.php");
 <script type="text/javascript">
   $(".sidebar-light-orange").find('.nav-pills').find('a[href="./dashboard.php"]').addClass('active');
 
+  $('.tab2-loading').show();
   buscaContFiltros();
 
   function buscaContFiltros() {
@@ -351,6 +364,7 @@ require_once("../header/cabecalho.php");
           $('#nCotacoesestados').html(data['estados']);
           $('#nCotacoesSemEnvios').html(data['SemEnvios']);   
           $('#nCotacoes').html(data['cotacoes']); 
+          $('.tab2-loading').hide();
         }
       }
     })

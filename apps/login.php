@@ -32,6 +32,7 @@ if (isset($_POST['login'])) {
                 $display = 'block';
                 $msg = "Usuário bloqueado!";
             } else {
+                $arrUser['bloqueado'] = $user['bloqueado'];
                 $_SESSION['user'] = $arrUser;
                 header("Location: ./dashboard.php");
             }

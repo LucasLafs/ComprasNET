@@ -126,6 +126,21 @@ function requestLicGeraisComprasNet(){
             $identificador = $licitacao->identificador;
             $uasg = $licitacao->uasg;
 
+            foreach ($licitacao AS $campo => $value) {
+
+                if (!is_object($value)) {
+                    // $licitacao->$campo = $value != null ? "'$value'" : 'null';
+                    if($value != null){
+                        if($campo != 'data_entrega_edital' && $campo != 'data_abertura_edital' && $campo != 'data_entrega_proposta' && $campo != 'data_publicacao' && $campo != 'importador_ultima_atualizacao')
+                        $value = str_replace("\"", "'", $value);
+                        $value = str_replace("\\", "/", $value);
+                        $licitacao->$campo = '"' . $value . '"';
+                    } else {
+                        $licitacao->$campo = 'null';
+                    }
+                }
+            }
+
             $sqlVerifica = "SELECT * FROM licitacoes_cab WHERE identificador = $identificador";
             $queryVerifica = mysqli_query($con, $sqlVerifica);
             if (mysqli_num_rows($queryVerifica) == 0) {
@@ -190,8 +205,10 @@ function requestLicGeraisComprasNet(){
                 }
                 mysqli_stmt_close($stmt);
             } else {
+
                 $sqlVerificaUpd = "SELECT * FROM licitacoes_cab WHERE identificador = $identificador and data_abertura_proposta > NOW() and situacao_aviso != '". $licitacao->situacao_aviso ."'";
                 $queryVerificaUpd = mysqli_query($con, $sqlVerificaUpd);
+                
                 if (mysqli_num_rows($queryVerificaUpd) > 0) {
                     $sql = "UPDATE licitacao_itens SET
                               updated = false,
@@ -285,6 +302,21 @@ function requestLicGeraisComprasNet(){
                     $itens_licitacao = json_decode($itens_licitacao);
 
                     foreach ($itens_licitacao as $item_licitacao) {
+
+                        foreach ($item_licitacao AS $campo => $value) {
+                            // relacionamentos serão feitos pela Lic_id;
+                            if (!is_object($value)) {
+                                // $item_licitacao->$campo = $value != null ? "\"$value\"" : 'null';
+                                if ($value != null) {
+                                    $value = str_replace("\"", "'", $value);
+                                    $value = str_replace("\\", "/", $value);
+                                    $item_licitacao->$campo = '"' . "$value" . '"';
+                                } else {
+                                    $item_licitacao->$campo = 'null';
+                                }
+                            }
+                        }
+
                         $sqlVerificaItens = "SELECT id FROM licitacao_itens WHERE lic_id = $identificador AND num_item_licitacao = " . $item_licitacao->numero_item_licitacao;
                         $queryCheckItens = mysqli_query($con, $sqlVerificaItens);
 
