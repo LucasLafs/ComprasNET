@@ -27,13 +27,13 @@
                             <br>
                         </div>
                     </div>
-                    <div class="row">
+                    <!-- <div class="row">
                         <div class="offset-2 col-md-8">
                             <label for="">Descrição</label>
                             <input type="text" class="form-control input" name="description" maxlength="80">
                             <br>
                         </div>
-                    </div>
+                    </div> -->
 
                     <div class="row" id='divBtnAlterarSenha' style='display: none;'>
                         <div class="offset-2 col-md-8">

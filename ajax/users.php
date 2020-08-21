@@ -20,9 +20,9 @@ function getUsers() {
     $id = $_REQUEST['id'];
     
     if ($id){
-        $sql = "SELECT id, nome, descricao, email, bloqueado, gestor  FROM usuarios WHERE id=$id";
+        $sql = "SELECT id, nome, email, bloqueado, gestor  FROM usuarios WHERE id=$id";
     } else {
-        $sql = "SELECT id, nome, descricao, email, bloqueado, gestor FROM usuarios";
+        $sql = "SELECT id, nome, email, bloqueado, gestor FROM usuarios";
     }
 
     $query = mysqli_query($con, $sql);
@@ -45,7 +45,7 @@ function saveUser() {
     $id_user = $_POST['id'];
     $nome = $_POST['name'];
     $email = $_POST['email'];
-    $description = $_POST['description'] != '' ? $_POST['description'] : '';
+    // $description = $_POST['description'] != '' ? $_POST['description'] : '';
     $current_pass = $_POST['current-pass'] != '' ? $_POST['current-pass'] : '';
     $pass = $_POST['pass'] != '' ? $_POST['pass'] : '';
     $confirm_pass = $_POST['confirm-pass'] ? $_POST['confirm-pass'] : '';
@@ -79,7 +79,7 @@ function saveUser() {
             return false;
         } 
 
-        $sql = "UPDATE usuarios SET nome = '$nome', email = '$email', descricao = '$description', bloqueado='$check_block', gestor='$check_admin' $updatePass WHERE id = $id_user";
+        $sql = "UPDATE usuarios SET nome = '$nome', email = '$email', bloqueado='$check_block', gestor='$check_admin' $updatePass WHERE id = $id_user";
         if (mysqli_query($con, $sql)) {
             echo  json_encode(['response' => ' Editado com sucesso', 'status' => 'ok'], 200);
             return true;
@@ -103,7 +103,7 @@ function saveUser() {
         }
 
         $pass = md5($pass);
-        $sql = "INSERT INTO usuarios (nome, descricao, email, senha, gestor, bloqueado) VALUES ('$nome', '$description', '$email', '$pass', '$check_admin', '$check_block')";
+        $sql = "INSERT INTO usuarios (nome, email, senha, gestor, bloqueado) VALUES ('$nome', '$email', '$pass', '$check_admin', '$check_block')";
         if (mysqli_query($con, $sql)){
             echo  json_encode(['response' => ' Cadastrado com sucesso', 'status' => 'ok'], 200);
             return true;

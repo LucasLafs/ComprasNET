@@ -343,6 +343,11 @@ function buscaCotacoes(){
 
         }
 
+        $where = '';
+        if (count($idents_enviados)){
+            $where = " lic.identificador NOT IN (" . implode(',', $idents_enviados) . ") AND ";
+        }
+
         $sql = "SELECT DISTINCT lic.identificador as identificador,
         lic.uasg as uasg, 
         lic.numero_aviso as numero_aviso, 
@@ -358,7 +363,7 @@ function buscaCotacoes(){
         LEFT JOIN licitacao_orgao AS o ON o.uasg = lic.uasg 
         LEFT JOIN licitacao_itens ON lic.identificador = licitacao_itens.lic_id
         RIGHT JOIN produtos_futura as pf ON lic.identificador = pf.lic_id 
-        WHERE lic.identificador NOT IN (" . implode(',', $idents_enviados) . ") AND licitacao_itens.valid = true ORDER BY data_abertura_proposta DESC";  // order by data_entrega_proposta_ord limit 5000";
+        WHERE $where licitacao_itens.valid = true ORDER BY data_abertura_proposta DESC";  // order by data_entrega_proposta_ord limit 5000";
         // echo $sql; exit;
         $query = mysqli_query($con, $sql);
         if($query){

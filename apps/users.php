@@ -62,7 +62,7 @@
                                       <tr>
                                         <th scope="col">Nome</th>
                                         <th scope="col">E-mail</th>
-                                        <th scope="col">Descrição</th>
+                                        <!-- <th scope="col">Descrição</th> -->
                                         <th style='text-align:right;' scope="col">Ações</th>
                                       </tr>
                                       </thead>
@@ -141,13 +141,13 @@
                 var usuarios = [];
 
                 $.each(data, function (i, d) {
-                    var descricao = d.descricao != '' ? d.descricao : '-';
+                    // var descricao = d.descricao != '' ? d.descricao : '-';
 
                     usuarios.push([
                         d.nome || '-',
                         d.email || '-',
-                        descricao || '-',
-                        " <button data-toggle='modal' data-target='#modalCadastroUsuario' class='btn btn-sm btn-edit text-info'\n" +
+                        // descricao || '-',
+                        " <button data-toggle='modal' style='margin-left: 5px;' data-target='#modalCadastroUsuario' class='btn btn-sm btn-edit text-info'\n" +
                         "      title='Editar Usuario' data-id='" + d.id + "'>\n" +
                         "                                <span class='fa fa-edit'/>\n" +
                         "          </button>  " +
@@ -173,15 +173,11 @@
                     "columns": [
                         {
                             className: "vertical-align",
-                            width: '1000px',
+                            width: '45%',
                         },
                         {
                             className: "vertical-align",
-                            width: '1000px',
-                        },
-                        {
-                            className: "vertical-align",
-                            width: '1000px',
+                            width: '45%',
                         },
                         {
                             "orderable": false,
@@ -392,7 +388,7 @@
                         form.find('[name=id]').val(res[0].id || '');
                         form.find('[name=name]').val(res[0].nome || '');
                         form.find('[name=email]').val(res[0].email || '');
-                        form.find('[name=description]').val(res[0].descricao || '');
+                        // form.find('[name=description]').val(res[0].descricao || '');
                         if (res[0].gestor == 'Y') {
                             form.find('[name=check-admin]').prop('checked', true);
                         }

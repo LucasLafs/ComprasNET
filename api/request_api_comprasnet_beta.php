@@ -131,7 +131,7 @@ function requestLicGeraisComprasNet(){
                 if (!is_object($value)) {
                     // $licitacao->$campo = $value != null ? "'$value'" : 'null';
                     if($value != null){
-                        if($campo != 'data_entrega_edital' && $campo != 'data_abertura_edital' && $campo != 'data_entrega_proposta' && $campo != 'data_publicacao' && $campo != 'importador_ultima_atualizacao')
+                        if($campo != 'data_entrega_edital' && $campo != 'data_abertura_edital' && $campo != 'data_entrega_proposta' && $campo != 'data_publicacao' && $campo != 'importador_ultima_atualizacao'  && $campo != 'objeto')
                         $value = str_replace("\"", "'", $value);
                         $value = str_replace("\\", "/", $value);
                         $licitacao->$campo = '"' . $value . '"';

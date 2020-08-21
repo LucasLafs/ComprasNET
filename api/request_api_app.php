@@ -360,7 +360,7 @@ function saveLici($identificador, $licitacao) {
         if (!is_object($value)) {
             // $licitacao->$campo = $value != null ? "'$value'" : 'null';
             if($value != null){
-                if ( $campo != 'dataHoraAberturaSessaoPublica' && $campo != 'dataHoraInicioEntregaProposta' ){
+                if ( $campo != 'dataHoraAberturaSessaoPublica' && $campo != 'dataHoraInicioEntregaProposta' && $campo != 'numeroUasg' && $campo != 'modalidade'){
                     $value = str_replace("\"", "'", $value);
                     $value = str_replace("\\", "/", $value);
                     $licitacao->$campo = '"' . "$value" . '"';
